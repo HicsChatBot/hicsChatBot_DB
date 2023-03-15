@@ -8,6 +8,7 @@ const {
     validateDob,
     validateGender,
     validateNric, 
+    validatePatientTitle, 
     validatePhone, 
     validateFullName 
 } = require('../controllers/validation');
