@@ -117,7 +117,7 @@ const createTables = (db) => {
             END;
             `;
     
-    return db.none(dbInitScript, {}),then(() => {console.log("Done Creating tables.")});
+    return db.none(dbInitScript, {}).then(() => {console.log("Done Creating tables.")});
 }
 
 // Preparing the connection details:
