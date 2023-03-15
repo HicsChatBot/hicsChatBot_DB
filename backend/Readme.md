@@ -1,13 +1,58 @@
+# API endpoints available (for deployed server):
+(Prefix) Deployment URL for webpage: https://hicschatbot-dbservice.onrender.com
+
+#### 1. Patients
+
+1. Ping (for testing if the resource endpoint exists)
+    * API endpoint: (prefix)**/patients/**
+    * GET
+
+1. Get all Patients
+    * API endpoint: (prefix)**/patients/getAllPatients**
+    * GET
+
+1. Get a Patient by NRIC
+    * API endpoint: (prefix)**/patients/getPatientByNric**
+    * GET
+    * (sample) request body: 
+        ```
+        {
+            "nric": "T0123456A"
+        }
+        ```
+
+1. Create a patient
+    * API endpoint: (prefix)**/patients/**
+    * POST
+    * (sample) request body:
+        ```
+        {
+            "patient": {
+                "nric": "T0123456A",
+                "fullname": "Alice Lee",
+                "dob": "1990-10-11",
+                "gender": "F",
+                "address": "Blk 120 Ang Mo Kio St 10",
+                "phone": "+65 91234567",
+                "title": "Miss"
+            }
+        }
+        ```
+
+---
 # Developer Docs for Backend Web App
 
 ## Architecture
 1. Model 
     * Represents an entity in the database.
 1. Controller
-    * handles the logic for the app.
-1. Route: The API endpoint
+    * handles the (business) logic for the app.
+1. Route: The API endpoints
+    * validates and sanitizes the inputs.
 
-
+1. Special classes:
+    * controllers/validation.js: contains custom validation chain methods.
+    * models/database.js: creates database representation object.
 
 ## Local Development
 * For local development, you can create a PostgreSQL database running in a docker container. 
@@ -29,7 +74,7 @@
             * HTTP request method
             * request URL
             * If data is provided in request body, choose: 'raw' and change from 'Text' to 'Json'
-        ![Example of POST request in Postman](./public/images/example_postmanReq.png)
+    ![Example of POST request in Postman](./public/images/example_postmanReq.png)
 
 ## Deployment
 * Web app and PostgreSQL database will both be deployed to (Render)[https://render.com/]

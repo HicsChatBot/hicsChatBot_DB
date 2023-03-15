@@ -102,6 +102,16 @@ const validateNric = (nric) => {
     return true;
 }
 
+const validatePatientTitle = (title) => {
+    checkNotNull("title", title);
+
+    if (!ENUM_VALUES.PATIENT_TITLE.includes(title)) {
+        throw new Error('patient title provided is invalid. Only: "Miss", "Mrs", "Mr" and "Ms" are accepted.');
+    }
+    
+    return true;
+}
+
 const validatePhone = (phone) => {
     checkNotNull('phone', phone);
 
@@ -143,6 +153,7 @@ module.exports = {
     validateFullName,
     validateGender,
     validateNric, 
+    validatePatientTitle,
     validatePhone,
 
     checkValidations,

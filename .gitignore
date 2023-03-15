@@ -1,3 +1,4 @@
 .env
 postgres-data/
 backend/node_modules/
+backend/package-lock.json

@@ -24,6 +24,7 @@ router.post("/",
         body("patient.gender").trim().toUpperCase(),
         body("patient.address").trim(),
         body("patient.phone").trim(),
+        body("patient.phone").trim(),
 
         // Validation
         body("patient.nric").custom((value, {req}) => validateNric(value)),
@@ -31,6 +32,7 @@ router.post("/",
         body("patient.dob").custom((value, {req}) => validateDob(value)),
         body("patient.gender").custom((value, {req}) => validateGender(value)),
         body("patient.address").custom((value, {req}) => validateAddress(value)),
+        body("patient.title").custom((value, {req}) => validatePatientTitle(value)),
         body("patient.phone").custom((value, {req}) => validatePhone(value)),
         checkValidations,
 
