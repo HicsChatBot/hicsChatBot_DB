@@ -12,8 +12,6 @@ const cn = process.env.DB_URL;
 // Creating a new database instance from the connection details:
 const db = pgp(cn);
 
-createTables(db);
-
 module.exports = {
     db,
 };
