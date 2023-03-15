@@ -1,5 +1,5 @@
 class Patient {
-    constructor(id, nric, fullname, gender, dob, address, phone, title) {
+    constructor(id, phone, title, nric, fullname, gender, dob, address) {
         this.id = id;
         this.nric = nric;
         this.fullname = fullname;

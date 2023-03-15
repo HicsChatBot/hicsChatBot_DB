@@ -6,7 +6,7 @@ const pgp = require('pg-promise')({
 const dotenv = require('dotenv');
 dotenv.config(); // load in from .env file
 
-const createTables = async (db) => {
+const createTables = (db) => {
     console.log("creating tables");
     dbInitScript = `
             BEGIN;
@@ -60,7 +60,7 @@ const createTables = async (db) => {
                 dob DATE NOT NULL,
                 address VARCHAR(255) NOT NULL,
 
-                CONSTRAINT person_nric_regex CHECK (nric ~* '(S|T|F|G)\d{7}[A-Z]')
+                CONSTRAINT person_nric_regex CHECK (nric ~ '^[T|S|F|G]\\d{7}[A-Z]$')
             );
 
             CREATE TABLE Doctors(
@@ -68,14 +68,14 @@ const createTables = async (db) => {
                 hospital_id INT NOT NULL REFERENCES Hospitals(id) ON UPDATE CASCADE ON DELETE NO ACTION,
                 phone VARCHAR(12) NOT NULL,
 
-                CONSTRAINT doctor_phone_regex CHECK (phone ~ '\+65[[:space:]][6|8|9]\d{7}')
+                CONSTRAINT doctor_phone_regex CHECK (phone ~ '^\\+65[[:space:]][6|8|9]\\d{7}$')
             );
             CREATE TABLE Patients(
                 id INT PRIMARY KEY REFERENCES Persons(id) ON UPDATE CASCADE ON DELETE CASCADE,
                 phone VARCHAR(12) NOT NULL,
                 title PatientTitle,
 
-                CONSTRAINT patient_phone_regex CHECK (phone ~ '\+65[[:space:]][6|8|9]\d{7}')
+                CONSTRAINT patient_phone_regex CHECK (phone ~ '^\\+65[[:space:]][6|8|9]\\d{7}$')
             );
 
             CREATE TABLE DoctorsSpecializations(
@@ -117,7 +117,7 @@ const createTables = async (db) => {
             END;
             `;
     
-    return await db.none(dbInitScript, {});
+    return db.none(dbInitScript, {}),then(() => {console.log("Done Creating tables.")});
 }
 
 // Preparing the connection details:
@@ -127,8 +127,7 @@ const cn = process.env.DB_URL;
 const db = pgp(cn);
 
 createTables(db);
-console.log("done creating tables");
 
 module.exports = {
-    db
+    db,
 };
