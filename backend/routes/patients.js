@@ -12,7 +12,7 @@ const {
     validatePhone, 
     validateFullName 
 } = require('../controllers/validation');
-const { body } = require("express-validator");
+const { body, param } = require("express-validator");
 
 router.get("/",
         ping);
@@ -42,9 +42,9 @@ router.post("/",
 router.get('/getAllPatients',
         getAllPatients);
 
-router.get('/getPatientByNric', 
-        body("nric").trim().toUpperCase(),
-        body("nric").custom((value, {req}) => validateNric(value)),
+router.get('/getPatientByNric/:nric', 
+        param("nric").trim().toUpperCase(),
+        param("nric").custom((value, {req}) => validateNric(value)),
         checkValidations,
 
         getPatientByNric);

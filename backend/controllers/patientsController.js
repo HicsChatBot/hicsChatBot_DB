@@ -57,7 +57,7 @@ const getAllPatients = (req, res, next) => {
 }
 
 const getPatientByNric = (req, res, next) => {
-    const nric = req.body.nric;
+    const nric = req.params.nric;
 
     return db.oneOrNone("SELECT * FROM Patients p JOIN Persons per ON p.id = per.id AND per.nric = $<nric>", {nric: nric})
             .then(resp => {
