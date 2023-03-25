@@ -12,7 +12,7 @@ const {
     validatePhone, 
     validateFullName 
 } = require('../controllers/validation');
-const { body, param } = require("express-validator");
+const { body, query } = require("express-validator");
 
 router.get("/",
         ping);
@@ -24,7 +24,6 @@ router.post("/",
         body("patient.dob").trim().isDate(),
         body("patient.gender").trim().toUpperCase(),
         body("patient.address").trim(),
-        body("patient.phone").trim(),
         body("patient.phone").trim(),
 
         // Validation
@@ -42,9 +41,9 @@ router.post("/",
 router.get('/getAllPatients',
         getAllPatients);
 
-router.get('/getPatientByNric/:nric', 
-        param("nric").trim().toUpperCase(),
-        param("nric").custom((value, {req}) => validateNric(value)),
+router.get('/getPatientByNric/', 
+        query("nric").trim().toUpperCase(),
+        query("nric").custom((value, {req}) => validateNric(value)),
         checkValidations,
 
         getPatientByNric);
