@@ -52,7 +52,7 @@ const validateDob = (dob) => {
     date = moment(dob, "YYYY-MM-DD", true);
 
     if (!date.isValid()) {
-        throw new Error('Date provided is invalid. Must match: YYYY-MM-DD format.');
+        throw new Error(`Date provided is invalid. Must match: YYYY-MM-DD format. Got: ${dob}.`);
     }
 
     now = moment();
@@ -86,17 +86,26 @@ const validateGender = (gender) => {
     checkStringNotEmpty("gender", gender);
 
     if (!ENUM_VALUES.GENDER.includes(gender)) {
-        throw new Error('gender provided is invalid. Only: "F", "M" and "O" are accepted.');
+        throw new Error(`gender provided is invalid. Only: "F", "M" and "O" are accepted. Got: ${gender}.`);
     }
     
     return true;
+}
+
+const validateId = (id) => {
+    checkNotNull('id', id);
+    checkStringNotEmpty('id', id);
+
+    if (isNaN(id) || parseInt(id) == 0) {
+        throw new Error(`id must be a positive integer. Got: ${id}.`);
+    }
 }
 
 const validateNric = (nric) => {
     checkNotNull('nric', nric);
     
     if (!REGEX_PATTERNS.nricPattern.test(nric)) {
-        throw new Error('nric is invalid.');
+        throw new Error(`nric is invalid. Got: ${nric}.`);
     }
 
     return true;
@@ -106,7 +115,7 @@ const validatePatientTitle = (title) => {
     checkNotNull("title", title);
 
     if (!ENUM_VALUES.PATIENT_TITLE.includes(title)) {
-        throw new Error('patient title provided is invalid. Only: "Miss", "Mrs", "Mr" and "Ms" are accepted.');
+        throw new Error(`patient title provided is invalid. Only: "Miss", "Mrs", "Mr" and "Ms" are accepted. Got: ${title}.`);
     }
     
     return true;
@@ -116,8 +125,15 @@ const validatePhone = (phone) => {
     checkNotNull('phone', phone);
 
     if (!REGEX_PATTERNS.phonePattern.test(phone)) {
-        throw new Error('phone is invalid.');
+        throw new Error(`phone is invalid. Got: ${phone}.`);
     }
+
+    return true;
+}
+
+const validateSpecialization = (specialization) => {
+    checkNotNull('specialization', specialization);
+    checkStringNotEmpty('specialization', specialization);
 
     return true;
 }
@@ -152,9 +168,11 @@ module.exports = {
     validateDob,
     validateFullName,
     validateGender,
+    validateId,
     validateNric, 
     validatePatientTitle,
     validatePhone,
+    validateSpecialization,
 
     checkValidations,
 }
