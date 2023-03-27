@@ -126,6 +126,71 @@ const getNextUpcomingAppointmentForPatient = (req, res, next) => {
             });
 }
 
+/**
+ * finds a doctor where ranking = null and specialization = {@code specialization}
+ */
+const findNextAvailableSubsidizedAppointment = (req, res, next) => {
+    const specialization = req.query.specialization;
+    const apptType = req.query.apptType;
+
+    return db.tx(async t => {
+        let res = await t.oneOrNone("SELECT ds.doctor_id FROM DoctorsSpecializations ds\
+                JOIN Specializations s ON ds.specialization_id = s.id \
+                WHERE ds.ranking is null AND s.name = $<specialization>", {specialization: specialization});
+        
+        const doctorId = res.doctor_id;
+
+        res = await t.oneOrNone("SELECT c.id FROM Doctors d JOIN Hospitals h ON d.hospital_id = h.id \
+                JOIN Clinics c on h.id = c.hospital_id \
+                JOIN Specializations s on s.id = c.specialization_id \
+                WHERE d.id = $<doctorId> AND s.name = $<specialization>",
+                { doctorId: doctorId, specialization: specialization});
+        const clinicId = res.id;
+
+        const roomNumber = 1;
+        
+        const numDaysFromNow = 7;
+        const numExistingAppointments = await t.one("SELECT count(*) FROM Appointments \
+                    WHERE clinic_id = $<clinicId> AND room_number = $<roomNumber> AND start_datetime::date = (now() + interval '$<numDaysFromNow> days')::date",
+                    {clinicId: clinicId, roomNumber: roomNumber, numDaysFromNow: numDaysFromNow});
+
+        while (numExistingAppointments > 5) {
+            numDaysFromNow += 1;
+            numExistingAppointments = await t.one("SELECT count(*) FROM Appointments \
+                    WHERE clinic_id = $<clinicId> AND room_number = $<roomNumber> AND start_datetime::date = (now() + interval '$<numDaysFromNow> days')::date",
+                    {clinicId: clinicId, roomNumber: roomNumber, numDaysFromNow: numDaysFromNow});
+        }
+
+        let datestr = new Date();
+        datestr.setDate(datestr.getDate() + numDaysFromNow);
+
+        const dateStr = datestr.toISOString().split("T")[0];
+
+        const times = ['10:00', '12:00', '14:00', '16:00', '18:00'];
+        let dt = null;
+
+        for (time of times) {
+            const datetime = dateStr + 'T' + time;
+            res = await t.oneOrNone("SELECT 1 FROM Appointments a \
+                    WHERE clinic_id = $<clinicId> AND room_number = $<roomNumber> \
+                    AND start_datetime = $<datetime>",
+                    {clinicId: clinicId, roomNumber: roomNumber, datetime: datetime})
+            
+            if (res == null) {
+                dt = datetime;
+                break;
+            }
+        }
+
+        return {clinicId, roomNumber, dt, doctorId, apptType}
+    }).then(data => {
+        return res.send({data: data});
+    }).catch(err => {
+        return res.status(500).json({ error: err.message });
+    });
+
+}
+
 module.exports = {
     createUpcomingAppointment,
     deleteUpcomingAppointment, 
@@ -133,4 +198,6 @@ module.exports = {
     getAppointment,
     getMostRecentPastAppointmentForPatient,
     getNextUpcomingAppointmentForPatient,
+
+    findNextAvailableSubsidizedAppointment,
 }

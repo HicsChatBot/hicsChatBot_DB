@@ -258,20 +258,20 @@ const resetDatabase = (req, res, next) => {
         INSERT INTO Appointments VALUES (13, 1, 19, '2022-06-07T12:00'::timestamp with time zone, 'completed', 13, 'first consult');
         INSERT INTO Appointments VALUES (3, 1, 20, '2022-06-07T12:00'::timestamp with time zone, 'completed', 2, 'first consult');
 
-        INSERT INTO Appointments VALUES (13, 1, 19, '2023-11-11T10:30'::timestamp with time zone, 'upcoming', 13, 'follow up');
-        INSERT INTO Appointments VALUES (3, 1, 20, '2023-10-10T10:30'::timestamp with time zone, 'upcoming', 2, 'follow up');
+        INSERT INTO Appointments VALUES (13, 1, 19, '2023-11-11T10:00'::timestamp with time zone, 'upcoming', 13, 'follow up');
+        INSERT INTO Appointments VALUES (3, 1, 20, '2023-10-10T10:00'::timestamp with time zone, 'upcoming', 2, 'follow up');
 
         /* Case 2: Only has Old Appt(s)
             -> patient_id = 21, 22
         */
-        INSERT INTO Appointments VALUES (6, 1, 21, '2022-05-05T11:00'::timestamp with time zone, 'completed', null, 'first consult');
-        INSERT INTO Appointments VALUES (12, 1, 22, '2022-04-04T13:00'::timestamp with time zone, 'completed', 12, 'first consult');
+        INSERT INTO Appointments VALUES (6, 1, 21, '2022-05-05T12:00'::timestamp with time zone, 'completed', null, 'first consult');
+        INSERT INTO Appointments VALUES (12, 1, 22, '2022-04-04T14:00'::timestamp with time zone, 'completed', 12, 'first consult');
 
         /* Case 3: Only has New Appt(s)
             -> patient_id = 23, 24
         */
-        INSERT INTO Appointments VALUES (8, 1, 23, '2023-09-09T11:00'::timestamp with time zone, 'upcoming', 8, 'first consult');
-        INSERT INTO Appointments VALUES (5, 1, 24, '2023-11-28T13:00'::timestamp with time zone, 'upcoming', null, 'first consult');
+        INSERT INTO Appointments VALUES (8, 1, 23, '2023-09-09T16:00'::timestamp with time zone, 'upcoming', 8, 'first consult');
+        INSERT INTO Appointments VALUES (5, 1, 24, '2023-11-28T16:00'::timestamp with time zone, 'upcoming', null, 'first consult');
 
         END;
         `;

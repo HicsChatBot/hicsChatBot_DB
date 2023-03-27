@@ -8,6 +8,8 @@ const {
     getNextUpcomingAppointmentForPatient,
     deleteUpcomingAppointment,
     createUpcomingAppointment,
+
+    findNextAvailableSubsidizedAppointment,
 } = require("../controllers/appointmentsController");
 const { 
     checkValidations,
@@ -20,6 +22,9 @@ const {
 } = require('../controllers/validation');
 const { query, body } = require('express-validator');
 
+router.get("/findNextAvailableSubsidizedAppointment",
+
+        findNextAvailableSubsidizedAppointment);
 
 router.post("/createUpcomingAppointment",
         // Sanitization
