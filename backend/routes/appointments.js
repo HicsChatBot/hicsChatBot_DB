@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 const { 
+    getAllAppointments,
     getAppointment,
     getMostRecentPastAppointmentForPatient,
     getNextUpcomingAppointmentForPatient,
@@ -72,5 +73,8 @@ router.get("/getMostRecentPastAppointment",
         checkValidations,
 
         getMostRecentPastAppointmentForPatient);
+
+router.get("/getAllAppointments",
+        getAllAppointments);
 
 module.exports = router;

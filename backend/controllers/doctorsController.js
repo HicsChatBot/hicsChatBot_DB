@@ -1,6 +1,19 @@
 const { db } = require('../models/database');
 const { Doctor } = require("../models/doctor");
 
+const getAllDoctors = (req, res, next) => {
+    return db.any("SELECT p.*, d.phone, d.hospital_id FROM Doctors d JOIN Persons p ON d.id = p.id", {})
+        .then(resp => {
+            if (resp.length > 0) {
+                resp = resp.map(d => Doctor.toEntity(d));
+            }
+            return res.send({ doctors: resp });
+        })
+        .catch(err => {
+            return res.status(500).send({error: err.message});
+        });
+}
+
 const getDoctor = (req, res, next) => {
     const id = req.query.id;
 
@@ -61,6 +74,7 @@ const getDoctorsBySpecializationAndRanking = (req, res, next) => {
 }
 
 module.exports = {
+    getAllDoctors,
     getDoctor,
     getDoctorsBySpecialization,
     getDoctorsBySpecializationAndRanking,

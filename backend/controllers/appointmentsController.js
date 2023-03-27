@@ -1,6 +1,19 @@
 const { db } = require('../models/database');
 const { Appointment } = require("../models/appointment");
 
+const getAllAppointments = (req, res, next) => {
+    return db.any("SELECT * FROM Appointments ORDER BY start_datetime ASC", {})
+        .then(resp => {
+            if (resp.length > 0) {
+                resp = resp.map(a => Appointment.toEntity(a));
+            }
+            return res.send({ appointments: resp });
+        })
+        .catch(err => {
+            return res.status(500).send({error: err.message});
+        });
+}
+
 const getAppointment = (req, res, next) => {
     const clinicId = req.query.clinicId;
     const roomNumber = req.query.roomNumber;
@@ -116,6 +129,7 @@ const getNextUpcomingAppointmentForPatient = (req, res, next) => {
 module.exports = {
     createUpcomingAppointment,
     deleteUpcomingAppointment, 
+    getAllAppointments,
     getAppointment,
     getMostRecentPastAppointmentForPatient,
     getNextUpcomingAppointmentForPatient,

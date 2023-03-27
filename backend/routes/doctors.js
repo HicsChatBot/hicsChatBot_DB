@@ -2,7 +2,12 @@ var express = require('express');
 var router = express.Router();
 const { checkValidations, validateNonNullPositiveInteger, validateSpecialization, validateRanking } = require("../controllers/validation");
 
-const { getDoctor, getDoctorsBySpecialization, getDoctorsBySpecializationAndRanking } = require("../controllers/doctorsController");
+const { 
+    getAllDoctors, 
+    getDoctor, 
+    getDoctorsBySpecialization, 
+    getDoctorsBySpecializationAndRanking 
+} = require("../controllers/doctorsController");
 const { query } = require('express-validator');
 
 router.get('/',
@@ -10,6 +15,9 @@ router.get('/',
         query("id").custom((value, {req}) => validateNonNullPositiveInteger("id", value)),
         checkValidations,
         getDoctor);
+
+router.get('/getAllDoctors',
+        getAllDoctors);
 
 router.get('/getDoctorsBySpecialization',
         query("specialization").trim().toLowerCase(),
