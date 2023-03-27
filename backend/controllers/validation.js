@@ -9,6 +9,7 @@ Object.freeze(REGEX_PATTERNS);
 
 const ENUM_VALUES = {
     APPOINTMENT_STATUS: ['upcoming', 'completed', 'missed'],
+    APPOINTMENT_TYPE: ['first consult', 'follow up', 'review'],
     DOCTOR_RANKING: ['consultant', 'specialist', 'senior consultant'],
     GENDER: ['F', 'M', 'O'],
     HOSPITAL_TYPE: ['acute', 'community'],
@@ -45,6 +46,16 @@ const validateAddress = (address) => {
     return true;
 }
 
+const validateApptType = (apptType) => {
+    checkNotNull("apptType", apptType);
+
+    if (!ENUM_VALUES.APPOINTMENT_TYPE.includes(apptType)) {
+        throw new Error(`Appointment Type provided is invalid. Only: 'first consult', 'follow up' and 'review' are accepted. Got: ${apptType}.`);
+    }
+    
+    return true;
+}
+
 const validateDob = (dob) => {
     checkNotNull('dob', dob);
     checkStringNotEmpty("dob", dob);
@@ -72,6 +83,34 @@ const validateDob = (dob) => {
     return true;
 }
 
+const validateDateTime = (fieldName, datetime) => {
+    checkNotNull(fieldName, datetime);
+    checkStringNotEmpty(fieldName, datetime);
+
+    parsedDatetime = moment(datetime, "YYYY-MM-DDTHH:mm", true);
+
+    if (!parsedDatetime.isValid()) {
+        throw new Error(`${fieldName} provided is invalid. Must match: YYYY-MM-DDTHH:mm format. Got: ${datetime}.`);
+    }
+
+    return true;
+}
+
+const validateFutureDateTime = (fieldName, datetime) => {
+    validateDateTime(fieldName, datetime);
+
+    datetime = moment(datetime, "YYYY-MM-DDTHH:mm", true);
+
+    now = moment();
+    num_days_before = now.diff(datetime, 'days');
+
+    if (num_days_before > 0) {
+        throw new Error(`${fieldName} provided must be after current datetime (${now}). Got: ${datetime}.`);
+    }
+
+    return true;
+}
+
 const validateFullName = (fullname) => {
     checkNotNull('fullname', fullname);
     checkStringNotEmpty("fullname", fullname);
@@ -92,13 +131,24 @@ const validateGender = (gender) => {
     return true;
 }
 
-const validateId = (id) => {
-    checkNotNull('id', id);
-    checkStringNotEmpty('id', id);
-
-    if (isNaN(id) || parseInt(id) == 0) {
-        throw new Error(`id must be a positive integer. Got: ${id}.`);
+const validateNonNullPositiveInteger = (fieldName, value) => {
+    checkNotNull(fieldName, value);
+    
+    if (isNaN(value) || value == 0) {
+        throw new Error(`${fieldName} must be a positive integer. Got: ${value}.`);
     }
+    return true;
+}
+
+const validateNullablePositiveInteger = (fieldName, value) => {
+    if (value == null) {
+        return true;
+    }
+    
+    if (isNaN(parseInt(value)) || parseInt(value) == 0) {
+        throw new Error(`${fieldName} must be a positive integer. Got: ${value}.`);
+    }
+    return true;
 }
 
 const validateNric = (nric) => {
@@ -156,7 +206,6 @@ const checkValidations = (req, res, next) => {
     }
 
     errors = result.errors;
-    console.log(errors);
     formattedErrorMsgs = result.errors.map(err => `Error in req.${err.location} for parameter ${err.param}: ${err.msg}`);
 
     return res.status(400).send({ errors: formattedErrorMsgs});
@@ -165,10 +214,14 @@ const checkValidations = (req, res, next) => {
 
 module.exports = {
     validateAddress,
+    validateApptType,
     validateDob,
+    validateDateTime,
+    validateFutureDateTime,
     validateFullName,
     validateGender,
-    validateId,
+    validateNonNullPositiveInteger,
+    validateNullablePositiveInteger,
     validateNric, 
     validatePatientTitle,
     validatePhone,
