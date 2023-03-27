@@ -181,6 +181,17 @@ const validatePhone = (phone) => {
     return true;
 }
 
+const validateRanking = (ranking) => {
+    checkNotNull('ranking', ranking);
+    checkStringNotEmpty('ranking', ranking);
+
+    if (!ENUM_VALUES.DOCTOR_RANKING.includes(ranking)) {
+        throw new Error(`doctor ranking provided is invalid. Only: "consultant", "specialist" and "senior consultant" are accepted. Got: ${ranking}.`);
+    }
+
+    return true;
+}
+
 const validateSpecialization = (specialization) => {
     checkNotNull('specialization', specialization);
     checkStringNotEmpty('specialization', specialization);
@@ -225,6 +236,7 @@ module.exports = {
     validateNric, 
     validatePatientTitle,
     validatePhone,
+    validateRanking,
     validateSpecialization,
 
     checkValidations,
