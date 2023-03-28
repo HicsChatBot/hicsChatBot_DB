@@ -182,9 +182,9 @@ const findNextAvailableSubsidizedAppointment = (req, res, next) => {
             }
         }
 
-        return {clinicId, roomNumber, dt, doctorId, apptType}
+        return {clinicId, roomNumber, startDatetime: dt, doctorId, apptType}
     }).then(data => {
-        return res.send({data: data});
+        return res.send({apptData: data});
     }).catch(err => {
         return res.status(500).json({ error: err.message });
     });
