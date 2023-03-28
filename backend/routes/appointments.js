@@ -10,6 +10,7 @@ const {
     createUpcomingAppointment,
 
     findNextAvailableSubsidizedAppointment,
+    findNextAvailablePrivateAppointment,
 } = require("../controllers/appointmentsController");
 const { 
     checkValidations,
@@ -25,6 +26,10 @@ const { query, body } = require('express-validator');
 router.get("/findNextAvailableSubsidizedAppointment",
 
         findNextAvailableSubsidizedAppointment);
+
+router.get("/findNextAvailablePrivateAppointment",
+
+        findNextAvailablePrivateAppointment);
 
 router.post("/createUpcomingAppointment",
         // Sanitization
@@ -55,7 +60,6 @@ router.delete("/deleteUpcomingAppointment",
         deleteUpcomingAppointment);
 
 router.get("/",
-        // query("startDatetime").trim().isDate(),
         query("appointment.startDatetime").trim(),
 
         query("clinicId").custom((value, {req}) => validateNonNullPositiveInteger("clinicId", value)),
