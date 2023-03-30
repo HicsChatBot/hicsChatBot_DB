@@ -249,7 +249,7 @@ const findNextAvailablePrivateAppointment = (req, res, next) => {
             }
         }
 
-        return {clinicId, roomNumber, startDatetime: dt, doctorId, apptType}
+        return {clinicId, roomNumber, startDatetime: dt, doctorId: parseInt(doctorId), apptType}
     }).then(data => {
         return res.send({apptData: data});
     }).catch(err => {
